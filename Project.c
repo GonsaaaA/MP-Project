@@ -1,98 +1,105 @@
 #include <stdio.h>
+#include <stdlib.h>
 #include <conio.h>
 #include <stdbool.h>
+#include <time.h>
 
 #include "ProjectFunctions.c"
 
 int main()
 {	
-	bool display = 1;
-	int select;
-	int position = 0;
+	srand(time(NULL));
 	
-	while(display)
+	bool bDisplay = 1; // condition for loop display
+	int nSelect; // recieve getch() from user
+	int nPosition = 0; // position of current cursor
+	
+	while(bDisplay)
 	{	
 		printf("\033[?25l");
-		displayMenu(position);
+		printf("\033[3J\033[2J");
 		
-		select = getch();
-		if (select == 0 || select == 224)
+		displayMenu(nPosition);
+		
+		nSelect = getch();
+		if (nSelect == 0 || nSelect == 224)
 		{
-			select = getch();
-			if (select == 72) // up
-			{
-				position = (position + 2) % 3;
-			}
-			else if (select == 80) // down
-			{
-				position = (position + 1) % 3;
-			}
+			nSelect = getch();
+			if (nSelect == 72) // up
+				nPosition = (nPosition + 2) % 3;
+			else if (nSelect == 80) // down
+				nPosition = (nPosition + 1) % 3;
 		}
-		else if (select == 13)
+		else if (nSelect == 13)
 		{
-			switch (position)
+			switch (nPosition)
 			{
-				case 0:
-					display = 0;
+				case 0: // START
+					bDisplay = 0;
 					break;
 					
-				case 1:
+				case 1: // INSTRUCTIONS
 					displayInstructions();
 					break;
 					
-				case 2:
+				case 2: // EXIT
 					printf(" "); // ending statement
 					return 0;
 			}
 		}
-		
-		printf("\033[2J\033[H");
 	}
 	
 	//------------------------------------------------//
 	
-	display = 1;
-	position = 0;
+	// set to default
+	bDisplay = 1;
+	nPosition = 0;
 	
-	int player = 2, tile = 12, dice = 2; 
+	int nPlayer = 2, nTile = 12, nDice = 2; // initialize player, tile, dice
 	
-	while (display)
+	while (bDisplay)
 	{	
-		printf("\033[2J\033[H");
-		displaySettings(position, player, tile, dice);
+		printf("\033[3J\033[2J");
+		displaySettings(nPosition, nPlayer, nTile, nDice);
 		
-		select = getch();
-		if (select == 0 || select == 224)
+		nSelect = getch();
+		if (nSelect == 0 || nSelect == 224)
 		{
-			select = getch();
-			if (select == 72) // up
+			nSelect = getch();
+			if (nSelect == 72) // up
+				nPosition = (nPosition + 2) % 3;
+			else if (nSelect == 80) // down
+				nPosition = (nPosition + 1) % 3;
+			else if (nSelect == 75 || nSelect == 77) // left, right
 			{
-				position = (position + 2) % 3;
-			}
-			else if (select == 80) // down
-			{
-				position = (position + 1) % 3;
-			}
-			else if (select == 75 || select == 77)
-			{
-				int direction = select == 75 ? -1 : 1;
-				switch (position)
+				int direction = nSelect == 75 ? -1 : 1;
+				switch (nPosition)
 				{
 					case 0:
-						modifySettings(&player, PLAYER_MIN, PLAYER_MAX, 1, direction);
+						modifySettings(&nPlayer, PLAYER_MIN, PLAYER_MAX, 1, direction);
+						break;
 					case 1:
-						modifySettings(&tile, TILE_MIN, TILE_MAX, 3, direction);
+						modifySettings(&nTile, TILE_MIN, TILE_MAX, 3, direction);
+						break;
 					case 2:
-						modifySettings(&dice, DICE_MIN, DICE_MAX, 1, direction);
+						modifySettings(&nDice, DICE_MIN, DICE_MAX, 1, direction);
+						break;
 				}
 			}
 		}
-		else if (select == 13)
-		{
-			display = 0;
-		}
-	}		
+		else if (nSelect == 13) // game start
+			bDisplay = 0;
+	}	
 	
 	//------------------------------------------------//
+	
+	
+	// initialize players
+	Player stPlayers[nPlayer];
+	initializePlayers(stPlayers, nPlayer, nTile);
+	displayGame(stPlayers[0], nTile);
+	
+	
+	
 	return 0;
 }

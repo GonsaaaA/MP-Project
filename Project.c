@@ -35,7 +35,7 @@ int main()
 			switch (nPosition)
 			{
 				case 0: // START
-					bDisplay = 0;
+					bDisplay = !bDisplay;
 					break;
 					
 				case 1: // INSTRUCTIONS
@@ -55,7 +55,7 @@ int main()
 	bDisplay = 1;
 	nPosition = 0;
 	
-	int nPlayer = 2, nTile = 12, nDice = 2; // initialize player, tile, dice
+	int nPlayer = PLAYER_MIN, nTile = TILE_MIN, nDice = DICE_MIN; // initialize player, tile, dice
 	
 	while (bDisplay)
 	{	
@@ -88,7 +88,7 @@ int main()
 			}
 		}
 		else if (nSelect == 13) // game start
-			bDisplay = 0;
+			bDisplay = !bDisplay;
 	}	
 	
 	//------------------------------------------------//
@@ -97,7 +97,11 @@ int main()
 	// initialize players
 	Player stPlayers[nPlayer];
 	initializePlayers(stPlayers, nPlayer, nTile);
-	displayGame(stPlayers[0], nTile);
+	
+	for (int i = 0; i < nPlayer; i++)
+	{
+		selectTile(stPlayers[i], nTile);
+	}	
 	
 	
 	

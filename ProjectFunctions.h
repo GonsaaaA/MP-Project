@@ -12,7 +12,7 @@ typedef struct
 {
     int nPlayerNumber;
     int nScore;
-    int nTile[TILE_MAX];
+    int aTile[TILE_MAX];
 } Player;
 
 void displayMenu(int position);
@@ -20,10 +20,11 @@ void displayInstructions();
 void displaySettings(int position, int player, int tile, int dice);
 void modifySettings(int* nNum, int nMin, int nMax, int nStep, int nDirection);
 void initializePlayers(Player stPlayer[], int nPlayer, int nTile);
-void displayGame(Player stPlayer, int nTile);
+int displayTile(Player stPlayer, int nTile, int nCursor, int aSelectedTile[]);
 int rollDice(int nDice);
-
-void displayPlayerTileTest(Player stPlayer[], int nPlayer, int nTile);
+void displayDice(int nRoll);
+void selectTile(Player stPlayer, int nTile);
+int modifyCursorPosition(Player stPlayer, int nTile, int nCursor, int nDirection);
 
 
 #endif

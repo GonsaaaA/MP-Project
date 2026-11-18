@@ -9,10 +9,11 @@
 int main()
 {	
 	srand(time(NULL));
-	
-	bool bDisplay = 1; // condition for loop display
+	bool bDisplay = true; // condition for loop display
 	int nSelect; // recieve getch() from user
 	int nPosition = 0; // position of current cursor
+	
+	// start page
 	
 	while(bDisplay)
 	{	
@@ -52,10 +53,12 @@ int main()
 	//------------------------------------------------//
 	
 	// set to default
-	bDisplay = 1;
+	bDisplay = true;
 	nPosition = 0;
 	
 	int nPlayer = PLAYER_MIN, nTile = TILE_MIN, nDice = DICE_MIN; // initialize player, tile, dice
+	
+	// setting page
 	
 	while (bDisplay)
 	{	
@@ -66,11 +69,11 @@ int main()
 		if (nSelect == 0 || nSelect == 224)
 		{
 			nSelect = getch();
-			if (nSelect == 72) // up
+			if (nSelect == 72) // UP
 				nPosition = (nPosition + 2) % 3;
-			else if (nSelect == 80) // down
+			else if (nSelect == 80) // DOWN
 				nPosition = (nPosition + 1) % 3;
-			else if (nSelect == 75 || nSelect == 77) // left, right
+			else if (nSelect == 75 || nSelect == 77) // LEFT, RIGHT
 			{
 				int direction = nSelect == 75 ? -1 : 1;
 				switch (nPosition)
@@ -98,10 +101,66 @@ int main()
 	Player stPlayers[nPlayer];
 	initializePlayers(stPlayers, nPlayer, nTile);
 	
+	// game page
+	
 	for (int i = 0; i < nPlayer; i++)
 	{
-		selectTile(stPlayers[i], nTile);
-	}	
+		bool bRoll = true; // condition statement for determining roll or select
+		bDisplay = true; // condition statement for game display
+		int aSelectedTile[TILE_MAX] = {0}; // initialize arrays to set of 0(open)
+		int aDice[nDice]; // array stores value of dices
+		int nCursor; // records current cursor position
+		int nRollTotal; // records the total value of dices roll
+		int nTileTotal; // records the total value of tiles selected
+		int nSelect; // recieves user input
+		
+		while (bDisplay)
+		{
+			nTileTotal = displayGame(stPlayers[i], nTile, nCursor, aSelectedTile, aDice, nRollTotal, bRoll, nDice);
+			
+			nSelect = getch();
+			if (nSelect == 27) // ESC
+			{
+				return 0;
+			}
+			else if (bRoll)
+			{
+				if (nSelect == 13) // ENTER
+				{
+					nRollTotal = rollDice(nDice, aDice);
+					bRoll = false;
+				}
+			}
+			else if (nSelect == 0 || nSelect == 224) // special keys
+			{
+				nSelect = getch();
+				
+				switch (nSelect)
+				{
+					case 72: // up
+						nCursor = modifyCursorPosition(stPlayers[i], nTile, nCursor, -6);
+						break;
+					case 80: // down
+						nCursor = modifyCursorPosition(stPlayers[i], nTile, nCursor, 6);
+						break;
+					case 75: // left
+						nCursor = modifyCursorPosition(stPlayers[i], nTile, nCursor, -1);
+						break;
+					case 77: // right
+						nCursor = modifyCursorPosition(stPlayers[i], nTile, nCursor, 1);
+						break;
+				}
+			}
+			else if (nSelect == 32) // SPACE
+				aSelectedTile[nCursor] = !aSelectedTile[nCursor];
+			else if (nSelect == 13) // ENTER
+			{
+				// validation
+				bDisplay = validatingSelectedTile(nTileTotal, nRollTotal, nTile, aSelectedTile, stPlayers[i]);
+				// align aSelectedTile[] with stPlayer.aTile[]
+			}
+		}
+	}
 	
 	
 	

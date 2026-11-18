@@ -126,10 +126,11 @@ void initializePlayers(Player stPlayer[], int nPlayer, int nTile)
 	}
 }
 
-int displayTile(Player stPlayer, int nTile, int nCursor, int aSelectedTile[])
+int displayGame(Player stPlayer, int nTile, int nCursor, int aSelectedTile[], int aDice[], int nRollTotal, int bRoll, int nDice)
 {
-	int nTotal = 0;
+    int nTileTotal = 0;
 	
+	// display SHUT THE BOX and PLAYER ID
 	system("cls");
 	printf("\033[36m"); // blue
     printf("\033[5;45H========================================");
@@ -138,6 +139,7 @@ int displayTile(Player stPlayer, int nTile, int nCursor, int aSelectedTile[])
     printf("\033[8;45H========================================");
     printf("\033[0m");
     
+    // display tiles
     printf("\033[10;45HOPEN TILES:");
     printf("\033[12;45H");
     for (int i = 0; i < nTile; i++)
@@ -145,97 +147,97 @@ int displayTile(Player stPlayer, int nTile, int nCursor, int aSelectedTile[])
 	if (i % 6 == 0)
 		printf("\033[%d;45H", 12 + 2 * (i / 6));
     if (stPlayer.aTile[i] == 1)
-   		printf("\033[31m[ X]\033[0m   "); // red
+   		printf("\033[31m[ X]\033[0m   "); // red; shut tiles
     else if (i == nCursor)
-        printf("\033[36m[%2d]\033[0m   ", i + 1); // blue
+        printf("\033[36m[%2d]\033[0m   ", i + 1); // blue; cursor pointed tile
     else if (aSelectedTile[i] == 1)
-    	printf("\033[33m[%2d]\033[0m   ", i + 1); // yellow
+    	printf("\033[33m[%2d]\033[0m   ", i + 1); // yellow; selected tile
     else
     	printf("[%2d]   ", i + 1);
     }
-    
-    printf("\033[18;45HSelected Tiles: ");
+
+	// display selected tiles
+	printf("\033[18;45HSelected Tiles: ");
     for (int i = 0; i < nTile; i++)
     {
     	if (aSelectedTile[i] == 1)
     	{
     		printf("%d   ", i + 1);
-    		nTotal += i + 1;
+    		nTileTotal += i + 1;
 		}
 	}
-	printf("\033[19;45HTotal: \033[%dm%d\033[0m", nTotal > 10 ? 31 : nTotal == 10 ? 32 : 0, nTotal);	
-	return nTotal;
+	
+	printf("\033[19;45HTotal: \033[%dm%d\033[0m", nTileTotal > nRollTotal ? 31 : nTileTotal == nRollTotal ? 32 : 0, nTileTotal); // green - equals to nRollTotal; red - exceed nRollTotal
+	
+	// display visualize dices
+	for (int i = 0; i < nDice; i++)
+	{
+		displayDice(aDice[i], i);
+	}
+	
+	if (bRoll)
+	{
+		printf("\033[17;45H----------------------------------------\n");
+    	printf("\033[18;45H          Press ENTER to roll\n");
+    	printf("\033[19;45H----------------------------------------\n");
+    }
+    else
+    {
+    	printf("\033[21;45HARROWS - Move | SPACE - Select");
+        printf("\033[22;45HENTER - Confirm");
+	}
+	
+	return nTileTotal;
 }
 
-void displayKeyInstructions()
-{
-	printf("\033[17;45H----------------------------------------\n");
-    printf("\033[18;45H          Press ENTER to roll\n");
-    printf("\033[19;45H----------------------------------------\n");
-}
-
-int rollDice(int nDice)
+int rollDice(int nDice, int aDice[])
 {
 	int nRoll;
-	int nDiceTotal = 0;
+	int nRollTotal = 0;
+	int nSelect;
 	
 	for (int i = 0; i < nDice; i++)
 	{
+		aDice[i] = nRoll;
 		nRoll = rand() % 6 + 1;
-		nDiceTotal += nRoll;
+		nRollTotal += nRoll;
 	}
 	
-	return nDiceTotal;
+	return nRollTotal;
 }
 
-void displayDice(int nRoll)
+void displayDice(int nRoll, int nPosition)
 {
-	printf("*");
-}
-
-void selectTile(Player stPlayer, int nTile)
-{
-	int nCursor = 0; // current cursor position
-	int nSelect; // recieves user input
-	bool bDisplay = 1; // condition for loop
-	int nTotal; // for validating chosen tiles
-	int aSelectedTile[TILE_MAX] = {0}; // initialize arrays to set of 0(open)
+	char aDice[3][3] = {{' ', ' ', ' '}, {' ', ' ', ' '}, {' ', ' ', ' '}};
 	
-	while (bDisplay)
+	if (nRoll >= 2)
 	{
-		nTotal = displayTile(stPlayer, nTile, nCursor, aSelectedTile); // diff of array and array[] ?
-		
-		nSelect = getch();
-		if (nSelect == 0 || nSelect == 224)
-		{
-			nSelect = getch();
-			
-			switch (nSelect)
-			{
-				case 72: // up
-					nCursor = modifyCursorPosition(stPlayer, nTile, nCursor, -6);
-					break;
-				case 80: // down
-					nCursor = modifyCursorPosition(stPlayer, nTile, nCursor, 6);
-					break;
-				case 75: // left
-					nCursor = modifyCursorPosition(stPlayer, nTile, nCursor, -1);
-					break;
-				case 77: // right
-					nCursor = modifyCursorPosition(stPlayer, nTile, nCursor, 1);
-					break;
-			}
-		}
-		else if (nSelect == 32) // Space
-		{
-			aSelectedTile[nCursor] = !aSelectedTile[nCursor];
-		}
-		else if (nSelect == 13) // Enter
-		{
-			// validation
-			// align aSelectedTile[] with stPlayer.aTile[]
-		}
+		aDice[0][0] = '*';
+		aDice[2][2] = '*';
 	}
+	
+	if (nRoll >= 4)
+	{
+		aDice[0][2] = '*';
+		aDice[2][0] = '*';
+	}
+	
+	if (nRoll == 1 || nRoll == 3 || nRoll == 5)
+		aDice[1][1] = '*';
+		
+	if (nRoll == 6)
+	{
+		aDice[1][0] = '*';
+		aDice[1][2] = '*';
+	}
+	
+	int nCol = 40 + nPosition * 12;
+	printf("\033[20;%dH+-------+", nCol);
+	for (int i = 0; i < 3; i++)
+	{
+		printf("\033[%d;%dH| %c %c %c |", 21 + i, nCol,aDice[i][0], aDice[i][1], aDice[i][2]); // starting row + i
+	}
+	printf("\033[24;%dH+-------+", nCol);
 }
 
 int modifyCursorPosition(Player stPlayer, int nTile, int nCursor, int nDirection)
@@ -251,4 +253,18 @@ int modifyCursorPosition(Player stPlayer, int nTile, int nCursor, int nDirection
 		return nNewCursor;
 	
 	return nCursor;
+}
+
+int validatingSelectedTile(int nTileTotal, int nRollTotal, int nTile, int aSelectedTile[], Player stPlayer)
+{
+	if (nTileTotal == nRollTotal)
+	{
+		for (int i = 0; i < nTile; i++)
+		{
+			stPlayer.aTile[i] = aSelectedTile[i];
+		}
+		return 0;
+	}
+	else
+		return 1;
 }

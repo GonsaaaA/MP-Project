@@ -20,11 +20,15 @@ void displayInstructions();
 void displaySettings(int position, int player, int tile, int dice);
 void modifySettings(int* nNum, int nMin, int nMax, int nStep, int nDirection);
 void initializePlayers(Player stPlayer[], int nPlayer, int nTile);
-int displayTile(Player stPlayer, int nTile, int nCursor, int aSelectedTile[]);
-int rollDice(int nDice);
-void displayDice(int nRoll);
-void selectTile(Player stPlayer, int nTile);
+void displayTile(Player stPlayer, int nTile, int nCursor, int aSelectedTile[]);
+int displaySelectedTile(int nTile, int aSelectedTile[], int nRollTotal);
+
+int displayGame(Player stPlayer, int nTile, int nCursor, int aSelectedTile[], int aDice[], int nRollTotal, int bRoll, int nDice);
+
+void displayDice(int nRoll, int nPosition);
+
 int modifyCursorPosition(Player stPlayer, int nTile, int nCursor, int nDirection);
+int validatingSelectedTile(int nTileTotal, int nRollTotal, int nTile, int aSelectedTile[], Player stPlayer);
 
 
 #endif

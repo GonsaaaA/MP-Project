@@ -92,6 +92,8 @@ int main()
 		}
 		else if (nSelect == 13) // game start
 			bDisplay = !bDisplay;
+		else if (nSelect == 27) // ESC
+			return 0;
 	}	
 	
 	//------------------------------------------------//
@@ -109,8 +111,8 @@ int main()
 		bDisplay = true; // condition statement for game display
 		int aSelectedTile[TILE_MAX] = {0}; // initialize arrays to set of 0(open)
 		int aDice[nDice]; // array stores value of dices
-		int nCursor; // records current cursor position
-		int nRollTotal; // records the total value of dices roll
+		int nCursor = 0; // records current cursor position
+		int nRollTotal = 0; // records the total value of dices roll
 		int nTileTotal; // records the total value of tiles selected
 		int nSelect; // recieves user input
 		

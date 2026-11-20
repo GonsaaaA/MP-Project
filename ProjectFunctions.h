@@ -18,17 +18,16 @@ typedef struct
 void displayMenu(int position);
 void displayInstructions();
 void displaySettings(int position, int player, int tile, int dice);
-void modifySettings(int* nNum, int nMin, int nMax, int nStep, int nDirection);
-void initializePlayers(Player stPlayer[], int nPlayer, int nTile);
-void displayTile(Player stPlayer, int nTile, int nCursor, int aSelectedTile[]);
-int displaySelectedTile(int nTile, int aSelectedTile[], int nRollTotal);
-
-int displayGame(Player stPlayer, int nTile, int nCursor, int aSelectedTile[], int aDice[], int nRollTotal, int bRoll, int nDice);
-
+void displayGame(Player stPlayers, int nTile, int nCursor, int aSelectedTile[], int aDice[], int nRollTotal, bool bRoll, int nDice);
 void displayDice(int nRoll, int nPosition);
 
-int modifyCursorPosition(Player stPlayer, int nTile, int nCursor, int nDirection);
-int validatingSelectedTile(int nTileTotal, int nRollTotal, int nTile, int aSelectedTile[], Player stPlayer);
+int getSelectedTotal(int aSelectedTile[], int nTile);
+void modifySettings(int* nNum, int nMin, int nMax, int nStep, int nDirection);
+void initializePlayers(Player stPlayers[], int nPlayer, int nTile);
+int modifyCursorPosition(Player stPlayers, int nTile, int nCursor, int nDirection);
+void modifyPlayersTile(int nTile, int aSelectedTile[], Player* stPlayers);
+bool hasOpenTile(Player stPlayers, int nTile);
 
-
+void testAllTilesShut(Player* stPlayers, int nTile);
+void testSinglePlayerGame(int* nPlayer);
 #endif

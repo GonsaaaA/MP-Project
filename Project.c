@@ -18,7 +18,7 @@ int main()
 	while(bDisplay)
 	{	
 		printf("\033[?25l");
-		printf("\033[3J\033[2J");
+		printf("\033[1J");
 		
 		displayMenu(nPosition);
 		
@@ -62,7 +62,7 @@ int main()
 	
 	while (bDisplay)
 	{	
-		printf("\033[3J\033[2J");
+		printf("\033[1J");
 		displaySettings(nPosition, nPlayer, nTile, nDice);
 		
 		nSelect = getch();
@@ -115,6 +115,12 @@ int main()
 		int nRollTotal = 0; // records the total value of dices roll
 		int nTileTotal; // records the total value of tiles selected
 		int nSelect; // recieves user input
+		
+		// initialize aDice
+		for (int i = 0; i < nDice; i++)
+		{
+			aDice[i] = 1;
+		}
 		
 		while (bDisplay)
 		{

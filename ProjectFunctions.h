@@ -17,16 +17,18 @@ typedef struct
 
 void displayMenu(int position);
 void displayInstructions();
-void displaySettings(int position, int player, int tile, int dice);
+void displaySettings(int position, int player, int tile, int *dice);
 void displayGame(Player stPlayers, int nTile, int nCursor, int aSelectedTile[], int aDice[], int nRollTotal, bool bRoll, int nDice);
 void displayDice(int nRoll, int nPosition);
 
 int getSelectedTotal(int aSelectedTile[], int nTile);
 void modifySettings(int* nNum, int nMin, int nMax, int nStep, int nDirection);
 void initializePlayers(Player stPlayers[], int nPlayer, int nTile);
+int rollDice(int nDice, int aDice[]);
 int modifyCursorPosition(Player stPlayers, int nTile, int nCursor, int nDirection);
-void modifyPlayersTile(int nTile, int aSelectedTile[], Player* stPlayers);
+void modifyPlayersTile(int nTile, int aSelectedTile[], Player stPlayers[]);
 bool hasOpenTile(Player stPlayers, int nTile);
+bool hasValidTile(Player stPlayers, int nTile, int nRollTotal);
 
 void testAllTilesShut(Player* stPlayers, int nTile);
 void testSinglePlayerGame(int* nPlayer);

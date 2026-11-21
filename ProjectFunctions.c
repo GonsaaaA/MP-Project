@@ -55,22 +55,22 @@ void displayInstructions()
 	system("pause");
 }
 
-void displaySettings(int nPosition, int nPlayer, int nTile, int nDice)
+void displaySettings(int nPosition, int nPlayer, int nTile, int *nDice)
 {
 	printf("\033[1J");
 	
     printf("\033[36m"); // blue
-    printf("\033[5;45H+------------------------------------------+");
-    printf("\033[6;45H|              GAME SETTINGS               |");
-    printf("\033[7;45H+------------------------------------------+");
+    printf("\033[5;40H+------------------------------------------+");
+    printf("\033[6;40H|              GAME SETTINGS               |");
+    printf("\033[7;40H+------------------------------------------+");
     printf("\033[0m\n");
     
     // PLAYERS
     if (nPosition == 0)
-    	printf("\033[10;50H\033[33mPLAYERS\033[0m"); // yellow
+    	printf("\033[10;46H\033[33mPLAYERS\033[0m"); // yellow
 	else
-		printf("\033[10;50HPLAYERS\n");
-	printf("\033[11;49H\t %s2%s \t %s3%s \t %s4%s", nPlayer == 2 ? "[" : " ",
+		printf("\033[10;46HPLAYERS\n");
+	printf("\033[11;55H %s2%s %6s3%s %6s4%s", nPlayer == 2 ? "[" : " ",
 													nPlayer == 2 ? "]" : " ",
 													nPlayer == 3 ? "[" : " ",
 													nPlayer == 3 ? "]" : " ",
@@ -79,30 +79,32 @@ void displaySettings(int nPosition, int nPlayer, int nTile, int nDice)
 	
 	// TILES
 	if (nPosition == 1)
-		printf("\033[13;50H\033[33mTILES\033[0m"); // yellow
+		printf("\033[13;46H\033[33mTILES\033[0m"); // yellow
 	else
-		printf("\033[13;50HTILES");
-	printf("\033[14;49H\t %s12%s \t %s15%s \t %s18%s",  nTile == 12 ? "[" : " ",
+		printf("\033[13;46HTILES");
+	printf("\033[14;55H %s12%s %5s15%s %5s18%s",  nTile == 12 ? "[" : " ",
 														nTile == 12 ? "]" : " ",
 														nTile == 15 ? "[" : " ",
 														nTile == 15 ? "]" : " ",
 														nTile == 18 ? "[" : " ",
 														nTile == 18 ? "]" : " ");
 	
-	// DICES
+	// DICE
+	if (nTile > 12)
+		*nDice = 3;
 	if (nPosition == 2)
-		printf("\033[16;50H\033[33mDICES\033[0m"); // yellow
+		printf("\033[16;46H\033[33mDICE\033[0m"); // yellow
     else
-		printf("\033[16;50HDICES");
-	printf("\033[17;49H\t %s2%s \t %s3%s",  nDice == 2 ? "[" : " ",
-											nDice == 2 ? "]" : " ",
-											nDice == 3 ? "[" : " ",
-											nDice == 3 ? "]" : " ");
+		printf("\033[16;46HDICE");
+	printf("\033[17;55H %s2%s %7s3%s",  *nDice == 2 ? "[" : " ",
+											*nDice == 2 ? "]" : " ",
+											*nDice == 3 ? "[" : " ",
+											*nDice == 3 ? "]" : " ");
 	
-	printf("\033[20;45H\033[36m+------------------------------------------+\033[0m");
-	printf("\033[21;49H%d PLAYERS  |  %d TILES  | %d DICES", nPlayer, nTile, nDice);
-	printf("\033[22;45H\033[36m+------------------------------------------+\033[0m");
-	printf("\033[24;53H== PRESS ENTER TO START ==");
+	printf("\033[20;40H\033[36m+------------------------------------------+\033[0m");
+	printf("\033[21;44H%d PLAYERS  |  %d TILES  | %d DICES", nPlayer, nTile, *nDice);
+	printf("\033[22;40H\033[36m+------------------------------------------+\033[0m");
+	printf("\033[25;48H== PRESS ENTER TO START ==");
 }
 
 void displayGame(Player stPlayers, int nTile, int nCursor, int aSelectedTile[], int aDice[], int nRollTotal, bool bRoll, int nDice)
@@ -148,7 +150,7 @@ void displayGame(Player stPlayers, int nTile, int nCursor, int aSelectedTile[], 
 	
 	printf("\033[18;45HTotal: \033[%dm%d\033[0m", !bRoll ? nSelectedTotal > nRollTotal ? 31 : nSelectedTotal == nRollTotal ? 32 : 0 : 0, nSelectedTotal); // green - equals to nRollTotal; red - exceed nRollTotal
 	
-	// display dices
+	// display dice
 	for (int i = 0; i < nDice; i++)
 	{
 		displayDice(aDice[i], i);
@@ -275,7 +277,7 @@ int modifyCursorPosition(Player stPlayers, int nTile, int nCursor, int nDirectio
 	return nCursor;
 }
 
-void modifyPlayersTile(int nTile, int aSelectedTile[], Player* stPlayers)
+void modifyPlayersTile(int nTile, int aSelectedTile[], Player stPlayers[])
 {
 	for (int i = 0; i < nTile; i++)
 	{
@@ -297,18 +299,68 @@ bool hasOpenTile(Player stPlayers, int nTile)
 	return false;
 }
 
+bool hasValidTile(Player stPlayers, int nTile, int nRollTotal)
+{
+	if (nRollTotal == 0)
+		return true;
+		
+	if (nTile == 0)
+		return false;
+		
+	if (stPlayers.aTile[nTile - 1] == 1)
+		return hasValidTile(stPlayers, nTile - 1, nRollTotal);
+		
+	if (nTile > nRollTotal)
+		return hasValidTile(stPlayers, nTile - 1, nRollTotal);
+		
+	return hasValidTile(stPlayers, nTile - 1, nRollTotal) || hasValidTile(stPlayers, nTile - 1, nRollTotal - nTile);
+}
+
+void chooseDiceNumber(Player stPlayers, int *nDice)
+{
+	if (stPlayers.aTile[6] == 1 && stPlayers.aTile[7] == 1 && stPlayers.aTile[8] == 1)
+	{
+		int nSelect;
+		
+		do
+		{
+			printf("\033[26;45H\033[0J");
+			printf("\033[26;57HSelect Number of Dice for Next Roll");
+			printf("\033[27;55DICE    %s1%s   %s2%s   %s3%s", *nDice == 1 ? "[" : " ",
+															  *nDice == 1 ? "]" : " ",
+															  *nDice == 2 ? "[" : " ",
+															  *nDice == 2 ? "]" : " ",
+															  *nDice == 3 ? "[" : " ",
+															  *nDice == 3 ? "]" : " ");
+															  
+			nSelect = getch();
+			if (nSelect == 0 || nSelect == 224)
+			{
+				nSelect = getch();
+				if (nSelect == 75 || 77)
+				{
+					int nDirection = nSelect == 75 ? -1 : 1;
+					modifySettings(nDice, 1, DICE_MAX, 1, nDirection);
+				}
+			}
+		} while (nSelect != 13);
+	}
+}
 
 int getScore(Player stPlayers, int nTile)
 {
 	int nScore = 0;
-	for (int i = 0; i < nTile, i++)
+	
+	for (int i = 0; i < nTile; i++)
 	{
-		if (stPlayers.aTile[i] == 0);
-		{
+		if (stPlayers.aTile[i] == 0)
 			nScore += i + 1;
-		}
 	}
+	
+	return nScore;
 }
+
+
 // testing functions
 void testAllTilesShut(Player* stPlayers, int nTile)
 {

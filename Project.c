@@ -12,6 +12,7 @@ int main()
 	bool bDisplay = true; // condition for loop display
 	int nSelect; // recieve getch() from user
 	int nPosition = 0; // position of current cursor
+	int nPlayer = PLAYER_MIN, nTile = TILE_MIN, nDice = DICE_MIN; // initialize player, tile, dice
 	
 	// start page
 	
@@ -35,7 +36,7 @@ int main()
 			switch (nPosition)
 			{
 				case 0: // START
-					bDisplay = !bDisplay;
+					bDisplay = false;
 					break;
 					
 				case 1: // INSTRUCTIONS
@@ -55,13 +56,11 @@ int main()
 	bDisplay = true;
 	nPosition = 0;
 	
-	int nPlayer = PLAYER_MIN, nTile = TILE_MIN, nDice = DICE_MIN; // initialize player, tile, dice
-	
 	// setting page
 	
 	while (bDisplay)
 	{	
-		displaySettings(nPosition, nPlayer, nTile, nDice);
+		displaySettings(nPosition, nPlayer, nTile, &nDice);
 		
 		nSelect = getch();
 		if (nSelect == 0 || nSelect == 224)
@@ -109,9 +108,9 @@ int main()
 		bool bRoll = true; // condition statement for determining roll or select
 		bDisplay = true; // condition statement for game display
 		int aSelectedTile[TILE_MAX] = {0}; // initialize arrays to set of 0(open)
-		int aDice[nDice]; // array stores value of dices
+		int aDice[nDice]; // array stores value of dice
 		int nCursor = 0; // records current cursor position
-		int nRollTotal = 0; // records the total value of dices roll
+		int nRollTotal = 0; // records the total value of dice roll
 		int nSelect; // recieves user input
 		
 		// initialize aDice
@@ -135,6 +134,21 @@ int main()
 				{
 					nRollTotal = rollDice(nDice, aDice);
 					bRoll = false;
+					
+					if (!hasValidTile(stPlayers[i], nTile, nRollTotal))
+					{
+						displayGame(stPlayers[i], nTile, nCursor, aSelectedTile, aDice, nRollTotal, bRoll, nDice);
+						stPlayers[i].nScore = getScore(stPlayers[i], nTile);
+						bDisplay = false;
+						
+						printf("\033[26;45H\033[0J");
+						printf("\033[26;57HYou Scored %d", stPlayers[i].nScore);
+						printf("\033[28;53H== Press ENTER to continue == ");
+						do
+						{
+							nSelect = getch();
+						} while (nSelect != 13);
+					}
 				}
 			}
 			else if (nSelect == 0 || nSelect == 224) // special keys
@@ -163,30 +177,35 @@ int main()
 			{
 			    // testAllTilesShut(&stPlayers[i], nTile);				
 				if (getSelectedTotal(aSelectedTile, nTile) == nRollTotal)
+				{
 					modifyPlayersTile(nTile, aSelectedTile, &stPlayers[i]);
-				if (!hasOpenTile(stPlayers[i], nTile))
-				{
-					displayGame(stPlayers[i], nTile, nCursor, aSelectedTile, aDice, nRollTotal, bRoll, nDice);
-					printf("\033[32;45HALL TILES SHUT! PLAYER %d WINS!\n", i = 1);
-					bDisplay = false;
-					system("pause");
-					return 0;
-				}
-				else
-				{
-					for (int j = 0; j < nTile; j++)
+					if (!hasOpenTile(stPlayers[i], nTile))
 					{
-						if (stPlayers[i].aTile[j] == 0)
-						{
-							nCursor = j;
-						}
+						displayGame(stPlayers[i], nTile, nCursor, aSelectedTile, aDice, nRollTotal, bRoll, nDice);
+						printf("\033[32;45HALL TILES SHUT! PLAYER %d WINS!\n", i = 1);
+						bDisplay = false;
+						system("pause");
+						return 0;
 					}
-					bRoll = true;
+					else
+					{
+						// move cursor position to origin
+						for (int j = 0; j < nTile; j++)
+						{
+							if (stPlayers[i].aTile[j] == 0)
+							{
+								nCursor = j;
+								break;
+							}
+						}
+						bRoll = true;
+					}
 				}
 			}
 		}
 	}
 	
+	// end game page
 	
 	
 	return 0;

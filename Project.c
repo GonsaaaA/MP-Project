@@ -1,3 +1,20 @@
+/*
+	Description:     A console-based implementation of Shut the Box
+               	 	 that allows 2 to 4 players to compete using
+               	 	 configurable numbers of tiles and dice. Players
+                	 aim to shut all tiles or achieve the lowest score.
+
+	Programmed by:   Darwin Lu Lin
+	Section:         S47B
+	Last modified:   November 25, 2026
+	Version:         1.0
+	Acknowledgements:https://www.ascii-code.com/
+					 https://www.ibm.com/docs/en/i/7.6.0?topic=extensions-standard-c-library-functions-table-by-name
+					 https://gist.github.com/fnky/458719343aabd01cfb17a3a4f7296797
+					 https://stackoverflow.com/questions/10463201/getch-and-arrow-codes
+					 https://www.geeksforgeeks.org/dsa/subset-sum-problem-dp-25/
+*/
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <conio.h>
@@ -99,18 +116,21 @@ int main()
 	// initialize players
 	// testSinglePlayerGame(&nPlayer);
 	Player stPlayers[nPlayer];
-	initializePlayers(stPlayers, nPlayer, nTile);
+	initializePlayers(stPlayers, nPlayer, nDice, nTile);
 	
 	// game page
 	
 	for (int i = 0; i < nPlayer; i++)
 	{
-		bool bRoll = true; // condition statement for determining roll or select
+		bool bRoll = true; // condition statement for roll or select
 		bDisplay = true; // condition statement for game display
-		int aSelectedTile[TILE_MAX] = {0}; // initialize arrays to set of 0(open)
-		int aDice[nDice]; // array stores value of dice
-		int nCursor = 0; // records current cursor position
-		int nRollTotal = 0; // records the total value of dice roll
+		int aSelectedTile[TILE_MAX] = {0}; // array storing the selection status of each tile 
+										   // (0 for unselected and 1 for selected)
+										   // initialize arrays to set of 0(unselected)
+		int aDice[nDice]; // array storing value of dice
+						  // for dice display
+		int nCursor = 0; // stores current cursor position
+		int nRollTotal = 0; // stores the total value of dice roll
 		int nSelect; // recieves user input
 		
 		// initialize aDice
@@ -121,7 +141,7 @@ int main()
 		
 		while (bDisplay)
 		{
-			displayGame(stPlayers[i], nTile, nCursor, aSelectedTile, aDice, nRollTotal, bRoll, nDice);
+			displayGame(stPlayers[i], nTile, nCursor, aSelectedTile, aDice, nRollTotal, bRoll);
 			
 			nSelect = getch();
 			if (nSelect == 27) // ESC
@@ -132,18 +152,20 @@ int main()
 			{
 				if (nSelect == 13) // ENTER
 				{
-					nRollTotal = rollDice(nDice, aDice);
+					if (nDice == 2)
+						chooseDiceNumber(&stPlayers[i], nDice);
+					nRollTotal = rollDice(stPlayers[i], aDice);
 					bRoll = false;
 					
 					if (!hasValidTile(stPlayers[i], nTile, nRollTotal))
 					{
-						displayGame(stPlayers[i], nTile, nCursor, aSelectedTile, aDice, nRollTotal, bRoll, nDice);
+						displayGame(stPlayers[i], nTile, nCursor, aSelectedTile, aDice, nRollTotal, bRoll);
 						stPlayers[i].nScore = getScore(stPlayers[i], nTile);
 						bDisplay = false;
 						
 						printf("\033[26;45H\033[0J");
 						printf("\033[26;57HYou Scored %d", stPlayers[i].nScore);
-						printf("\033[28;53H== Press ENTER to continue == ");
+						printf("\033[28;50H== Press ENTER to continue == ");
 						do
 						{
 							nSelect = getch();
@@ -181,8 +203,8 @@ int main()
 					modifyPlayersTile(nTile, aSelectedTile, &stPlayers[i]);
 					if (!hasOpenTile(stPlayers[i], nTile))
 					{
-						displayGame(stPlayers[i], nTile, nCursor, aSelectedTile, aDice, nRollTotal, bRoll, nDice);
-						printf("\033[32;45HALL TILES SHUT! PLAYER %d WINS!\n", i = 1);
+						displayGame(stPlayers[i], nTile, nCursor, aSelectedTile, aDice, nRollTotal, bRoll);
+						printf("\033[32;45HALL TILES SHUT! PLAYER %d WINS!\n", stPlayers[i].nPlayerNumber);
 						bDisplay = false;
 						system("pause");
 						return 0;
@@ -190,14 +212,9 @@ int main()
 					else
 					{
 						// move cursor position to origin
-						for (int j = 0; j < nTile; j++)
-						{
-							if (stPlayers[i].aTile[j] == 0)
-							{
-								nCursor = j;
-								break;
-							}
-						}
+						nCursor = 0;
+						while (stPlayers[i].aTile[nCursor] == 1)
+							nCursor++;
 						bRoll = true;
 					}
 				}

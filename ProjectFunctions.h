@@ -21,6 +21,8 @@ void displayInstructions();
 void displaySettings(int position, int player, int tile, int *dice);
 void displayGame(Player stPlayers, int nTile, int nCursor, int aSelectedTile[], int aDice[], int nRollTotal, bool bRoll);
 void displayDice(int nRoll, int nPosition);
+void displayGameOver();
+void displayRankV1(Player stPlayers[], int nPlayer, int nPosition);
 
 int getSelectedTotal(int aSelectedTile[], int nTile);
 void modifySettings(int* nNum, int nMin, int nMax, int nStep, int nDirection);
@@ -31,6 +33,7 @@ void modifyPlayersTile(int nTile, int aSelectedTile[], Player stPlayers[]);
 bool hasOpenTile(Player stPlayers, int nTile);
 bool hasValidTile(Player stPlayers, int nTile, int nRollTotal);
 void chooseDiceNumber(Player stPlayers[], int nDice);
+void sortRank(Player stPlayers[], int nPlayer);
 
 void testAllTilesShut(Player* stPlayers, int nTile);
 void testSinglePlayerGame(int* nPlayer);

@@ -17,35 +17,45 @@ void displayMenu(int nPosition)
 {
 	printf("\033[1J");
 	
+	// SHUT THE BOX
 	printf("\033[36m"); // blue
-	printf("\033[10;45H+-------------------------------+\n");
-	printf("\033[11;45H|                               |\n");
-	printf("\033[12;45H|    ____  _   _ _   _ _____    |\n");
-	printf("\033[13;45H|   / ___|| | | | | | |_   _|   |\n");
-	printf("\033[14;45H|   \\___ \\| |_| | | | | | |     |\n");
-	printf("\033[15;45H|    ___) |  _  | |_| | | |     |\n");
-	printf("\033[16;45H|   |____/|_| |_|\\___/  |_|     |\n");
-	printf("\033[17;45H|                               |\n");
-	printf("\033[18;45H+-------------------------------+\n");
+	printf("\033[6;48H ____  _   _ _   _ _____");
+    printf("\033[7;48H/ ___|| | | | | | |_   _|");
+    printf("\033[8;48H\\___ \\| |_| | | | | | |");
+    printf("\033[9;48H ___) |  _  | |_| | | |");
+    printf("\033[10;48H|____/|_| |_|\\___/  |_|");
+    printf("\033[12;54HT H E   B O X");
+    
+    // Left die
+    printf("\033[7;34H+-------+");
+    printf("\033[8;34H| o     |");
+    printf("\033[9;34H|       |");
+    printf("\033[10;34H|     o |");
+    printf("\033[11;34H+-------+");
+
+    // Right die
+    printf("\033[7;79H+-------+");
+    printf("\033[8;79H| o   o |");
+    printf("\033[9;79H|   o   |");
+    printf("\033[10;79H| o   o |");
+    printf("\033[11;79H+-------+");
+    
 	printf("\033[0m");
 	
 	// START DISPLAY
 	if (nPosition == 0)
-    	printf("\033[23;56H\033[33m> START\033[0m\n"); // yellow
-	else
-		printf("\033[23;56HSTART\n");
+		printf("\033[43;30m"); // yellow back; black fore
+    printf("\033[19;51H    START GAME    \033[0m");
 	
 	// INSTRUCTION DISPLAY
 	if (nPosition == 1)
-		printf("\033[24;56H\033[33m> INSTRUCTIONS\033[0m\n"); // yellow
-	else
-		printf("\033[24;56HINSTRUCTIONS\n");
+		printf("\033[43;30m"); // yellow back; black fore
+	printf("\033[22;51H   INSTRUCTIONS   \033[0m");
 	
 	// EXIT DISPLAY
 	if (nPosition == 2)
-		printf("\033[25;56H\033[33m> EXIT\033[0m\n"); // yellow
-    else
-		printf("\033[25;56HEXIT\n");
+		printf("\033[43;30m"); // yellow back; black fore
+	printf("\033[25;51H    EXIT GAME     \033[0m");
 }
 
 
@@ -58,14 +68,48 @@ void displayMenu(int nPosition)
 */
 void displayInstructions()
 {
-	system("cls");
-	printf("==================HOW TO PLAY==================\n");
-	printf("1. Objective: Shut as many tiles numbered 1 to 12 as possible. The player with the lowest score wins.\n");
-	printf("2. Roll the Dice: Players take turns rolling two dice and adding their values. Once tiles 7, 8, and 9 are all shut, the player may choose to roll one or two dice.\n");
-	printf("3. Shut the Tiles: Select available tiles whose numbers add up to the dice total. For example, if you roll a total of 5, you can shut 5, 1 and 4, or 2 and 3.\n");
-	printf("4. Continue Playing: Keep rolling and shutting tiles until no valid combination is available for the current roll.\n");
-	printf("5. Scoring: Your score is the sum of all remaining open tiles. After both players finish, the player with the lowest score wins.\n");
-	printf("6. Instant Win: If a player shuts all 12 tiles, they win immediately!\n");
+	printf("\033[1J");
+	
+	// HOW TO PLAY
+    printf("\033[36m\033[3;51HH O W   T O   P L A Y\033[0m"); // blue
+    
+    // OBJECTIVE
+    printf("\033[6;27H\033[33mOBJECTIVE\033[0m");
+    printf("\033[7;27HShut as many tiles as possible, the player with the lowest score wins.");
+
+    // ROLL THE DICE
+    printf("\033[9;27H\033[33m01 / ROLL THE DICE\033[0m"); // yellow
+    printf("\033[10;27HRoll the dice and add their values together.");
+    
+    printf("\033[36m"); // blue
+    printf("\033[12;30H+-------+   +-------+");
+    printf("\033[13;30H| o     |   | o     |");
+    printf("\033[14;30H|       | + |   o   |  =  5");
+    printf("\033[15;30H|     o |   |     o |");
+    printf("\033[16;30H+-------+   +-------+");
+    printf("\033[0m");
+
+    // SHUT THE TILES
+    printf("\033[18;27H\033[33m02 / SHUT THE TILES\033[0m"); // yellow
+    printf("\033[19;27HSelect open tiles whose values add up to the dice total.");
+
+    printf("\033[21;30H");
+    printf("\033[36m[ 1] + [ 4]\033[0m"); // blue
+    printf("    OR    ");
+    printf("\033[36m[ 2] + [ 3]\033[0m"); // blue
+    printf("    OR    ");
+    printf("\033[36m[ 5]\033[0m"); // blue
+
+    // SCORING AND WINNING
+    printf("\033[23;27H\033[33mSCORING & WINNING\033[0m"); // yellow
+
+    printf("\033[24;27HYour turn ends when no valid combination remains.");
+    printf("\033[25;27HYour score is the sum of all remaining open tiles.");
+    printf("\033[26;27HThe player with the lowest score wins.");
+
+    printf("\033[27;27H\033[32mShut every tile to win immediately!\033[0m");
+	printf("\n\n");
+	
 	system("pause");
 }
 
@@ -131,7 +175,7 @@ void displaySettings(int nPosition, int nPlayer, int nTile, int *nDice)
 										*nDice == 3 ? "]" : " ");
 	
 	printf("\033[20;40H\033[36m+------------------------------------------+\033[0m");
-	printf("\033[21;44H%d PLAYERS  |  %d TILES  | %d DICES", nPlayer, nTile, *nDice);
+	printf("\033[21;44H%d PLAYERS  |  %d TILES  | %d DICE", nPlayer, nTile, *nDice);
 	printf("\033[22;40H\033[36m+------------------------------------------+\033[0m");
 	printf("\033[25;48H== PRESS ENTER TO START ==");
 }
@@ -212,8 +256,9 @@ void displayGame(Player stPlayers, int nTile, int nCursor, int aSelectedTile[], 
 	}
 	else
 	{
-    printf("\033[26;45HARROWS - Move | SPACE - Select");
-    printf("\033[27;45HENTER - Confirm");
+    printf("\033[26;45HARROWS - Move");
+    printf("\033[27;45HSPACE - Select");
+    printf("\033[28;45HENTER - Confirm");
 	}
 }
 
@@ -233,23 +278,23 @@ void displayDice(int nRoll, int nPosition)
 	
 	if (nRoll >= 2)
 	{
-		aDice[0][0] = '*';
-		aDice[2][2] = '*';
+		aDice[0][0] = 'o';
+		aDice[2][2] = 'o';
 	}
 	
 	if (nRoll >= 4)
 	{
-		aDice[0][2] = '*';
-		aDice[2][0] = '*';
+		aDice[0][2] = 'o';
+		aDice[2][0] = 'o';
 	}
 	
 	if (nRoll == 1 || nRoll == 3 || nRoll == 5)
-		aDice[1][1] = '*';
+		aDice[1][1] = 'o';
 		
 	if (nRoll == 6)
 	{
-		aDice[1][0] = '*';
-		aDice[1][2] = '*';
+		aDice[1][0] = 'o';
+		aDice[1][2] = 'o';
 	}
 	
 	int nCol = 47 + nPosition * 12; // starting col + index * width
@@ -262,19 +307,165 @@ void displayDice(int nRoll, int nPosition)
 }
 
 
-void displayResult(Player stPlayers[])
+/* 
+	This function displays GAME OVER using ASCII art
+	
+	Precondition: The positions are correct
+	@return None.
+*/
+void displayGameOver()
 {
 	printf("\033[1J");
 	
-	printf("\033[4;45H\033[36mGAME OVER\033[0m");
+	printf("\033[36m"); // blue
+    printf("\033[5;37H  ____    _    __  __ _____");
+    printf("\033[6;37H / ___|  / \\  |  \\/  | ____|");
+    printf("\033[7;37H| |  _  / _ \\ | |\\/| |  _|");
+    printf("\033[8;37H| |_| |/ ___ \\| |  | | |___");
+    printf("\033[9;37H \\____/_/   \\_\\_|  |_|_____|");
+    
+    printf("\033[5;67H  _____     _______ ____");
+    printf("\033[6;67H / _ \\ \\   / / ____|  _ \\");
+    printf("\033[7;67H| | | \\ \\ / /|  _| | |_) |");
+    printf("\033[8;67H| |_| |\\ V / |___|  _ <");
+    printf("\033[9;67H \\___/  \\_/  |_____|_| \\_\\");
+    printf("\033[0m");
+}
+
+
+/* 
+	This function displays the winner announcement and scoreboard
+    according to player rankings.
+    
+	Precondition: stPlayers is sorted in ascending order of scores, nPlayer
+				  is between 2 and 4, and nPosition is either 0 or 1.
+	@param stPlayers is the array containing the ranked players' information.
+	@param nPlayer is the total number of players.
+	@param nPosition determines the highlighted menu option
+	       (0 for Play Again and 1 for Main Menu).
+	@return None.
+*/
+void displayRankV1(Player stPlayers[], int nPlayer, int nPosition)
+{
+    // WINNER ANNOUNCEMENT
+    printf("\033[12;57H\033[32m"); // green
+    if (stPlayers[0].nScore == stPlayers[1].nScore)
+    {
+    	printf("DRAW BETWEEN: ");
+    	for (int i = 0; i < nPlayer; i++)
+    	{
+    		if (stPlayers[i].nScore == stPlayers[0].nScore)
+    			printf("Player %d  ", stPlayers[i].nPlayerNumber);
+		}
+	}
+	else
+		printf("PLAYER %d WINS", stPlayers[0].nPlayerNumber);
+	printf("\033[0m");
+    
+    // SCOREBOARD
+    printf("\033[14;43H------------------------------------------");
+    printf("\033[15;43H%-17s%-17s%s", "PLAYER", "SCORE", "RANK");
+    printf("\033[16;43H------------------------------------------");
+    
+    int nRank = 1;
+    for (int i = 0; i < nPlayer; i++)
+    {
+    	if (i > 0 && stPlayers[i].nScore != stPlayers[i - 1].nScore)
+    		nRank = i + 1;
+    	
+    	printf("\033[%d;43HPlayer %-14d%-14d%d", 18 + i, stPlayers[i].nPlayerNumber, stPlayers[i].nScore, nRank);
+	}
 	
+	printf("\033[23;43H------------------------------------------");
+	
+	// PLAY AGAIN
+	printf("\033[25;57H");
+	if (nPosition == 0)
+        printf("\033[46;30m");
+    printf("  PLAY AGAIN  \033[0m");
+    
+    // MAIN MENU
+    printf("\033[27;57H");
+    if (nPosition == 1)
+        printf("\033[46;30m");
+    printf("  MAIN MENU    \033[0m");
+}
+
+
+
+/* 
+	This function displays the winner announcement and scoreboard
+    according to player ID.
+    
+	Precondition: stPlayers is initialized, nPlayer is between 2 and 4,
+	nWinner is the index of the player with the lowest score, and nPosition
+	is either 0 or 1.
+	@param stPlayers is the array containing players' information.
+	@param nPlayer is the total number of players.
+	@param nPosition determines the highlighted menu option
+	       (0 for Play Again and 1 for Main Menu).
+	@param nWinner is the index of the player with the lowest score.
+	@return None.
+*/
+void displayRankV2(Player stPlayers[], int nPlayer, int nWinner, int nPosition)
+{
+    // WINNER ANNOUNCEMENT
+    printf("\033[12;57H\033[32m"); // green
+    int nDraw = 0;
+    
+    for (int i = 0; i < nPlayer; i++)
+    {
+    	if (stPlayers[i].nScore == stPlayers[nWinner].nScore)
+    		nDraw++;
+	}
+	
+    if (nDraw > 1)
+    {
+    	printf("DRAW BETWEEN: ");
+    	for (int i = 0; i < nPlayer; i++)
+    	{
+    		if (stPlayers[i].nScore == stPlayers[nWinner].nScore)
+    			printf("Player %d  ", stPlayers[i].nPlayerNumber);
+		}
+	}
+	else
+		printf("PLAYER %d WINS", stPlayers[nWinner].nPlayerNumber);
+	printf("\033[0m");
+    
+    // SCOREBOARD
+    printf("\033[14;43H------------------------------------------");
+    printf("\033[15;43H%-17s%-17s%s", "PLAYER", "SCORE", "RESULT");
+    printf("\033[16;43H------------------------------------------");
+    
+	for (int i = 0; i < nPlayer; i++)
+    {   		
+    	if (stPlayers[i].nScore == stPlayers[nWinner].nScore)
+            printf("\033[32m"); // green
+    	
+    	printf("\033[%d;43HPlayer %-11d%-16d%s", 18 + i, stPlayers[i].nPlayerNumber, stPlayers[i].nScore, stPlayers[i].nScore == stPlayers[nWinner].nScore ? "WINNER" : "  --");
+    	printf("\033[0m");
+	}
+	
+	printf("\033[23;43H------------------------------------------");
+	
+	// PLAY AGAIN
+	printf("\033[25;57H");
+	if (nPosition == 0)
+        printf("\033[46;30m");
+    printf("  PLAY AGAIN  \033[0m");
+    
+    // MAIN MENU
+    printf("\033[27;57H");
+    if (nPosition == 1)
+        printf("\033[46;30m");
+    printf("  MAIN MENU   \033[0m");
 }
 
 
 /* 
 	This function initializes each player's information by assigning
     a player number, setting the initial score to 0, assigning the
-    configured number of dice, and set all tiles to open.
+    configured number of dice, and setting all tiles to open.
     
 	Precondition: nPlayer is between 2 and 4, nDice is either 2 or 3,
 	              nTile is either 12, 15, or 18, and stPlayers has
@@ -352,7 +543,7 @@ void modifySettings(int* nNum, int nMin, int nMax, int nStep, int nDirection)
 
 
 /* 
-	This function generates a random value range from 1 to 6 for each
+	This function generates a random value ranging from 1 to 6 for each
 				  die and calculates the total roll value.
     
 	Precondition: stPlayers is initialized, stPlayers.nDice is between
@@ -417,9 +608,7 @@ int modifyCursorPosition(Player stPlayers, int nTile, int nCursor, int nDirectio
     
 	Precondition: stPlayers points to an initialized Player structure,
 	              nTile is either 12, 15, or 18, aSelectedTile contains
-	              at least nTile elements with values of 0 or 1, and
-	              the selected tiles contains nTile elements with values
-				  of 0 or 1.
+	              at least nTile elements with values of 0 or 1.
 	@param nTile is the total number of tiles.
 	@param aSelectedTile is the array storing the selection status of each tile.
 	@param stPlayers points to the current player's structure whose tiles
@@ -556,7 +745,56 @@ int getScore(Player stPlayers, int nTile)
 }
 
 
-// -------------------------- testing functions --------------------------
+/*
+	This function sorts the players in ascending order of scores
+    by comparing and swapping their structures
+    
+	Precondition: stPlayers is initialized, all player scores are calculated,
+              	  and nPlayer is between 2 and 4.
+	@param stPlayers is the array containing all players' information.
+	@param nPlayer is the total number of players.
+	@return None.
+*/
+void sortRank(Player stPlayers[], int nPlayer)
+{
+	for (int i = 0; i < nPlayer - 1; i++)
+	{
+		for (int j = i + 1; j < nPlayer; j++)
+		{
+			if (stPlayers[i].nScore > stPlayers[j].nScore)
+			{
+				Player stTemp = stPlayers[i];
+				stPlayers[i] = stPlayers[j];
+				stPlayers[j] = stTemp;
+			}
+		}
+	}
+}
+
+
+/*
+	This function determines the winner by comparing the scores
+    of all players.
+    
+	Precondition: stPlayers is initialized, all player scores are
+				  calculated, and nPlayer is between 2 and 4.
+	@param stPlayers is the array containing all players' information.
+	@param nPlayer is the total number of players.
+	@return The array index of the player with the lowest score.
+*/
+int getWinner(Player stPlayers[], int nPlayer)
+{
+	int nWinner = 0;
+	for (int i = 1; i < nPlayer; i++)
+	{
+		if (stPlayers[i].nScore < stPlayers[nWinner].nScore)
+			nWinner = i;
+	}
+	
+	return nWinner;
+}
+
+
 void testAllTilesShut(Player* stPlayers, int nTile)
 {
 	for (int i = 0; i < nTile; i++)
@@ -565,7 +803,18 @@ void testAllTilesShut(Player* stPlayers, int nTile)
 	}
 }
 
+
+// -------------------------- testing functions --------------------------
 void testSinglePlayerGame(int* nPlayer)
 {
 	*nPlayer = 1;
+}
+
+void testDisplayPlayers(Player stPlayers[], int nPlayer)
+{
+	for (int i = 0; i < nPlayer; i++)
+	{
+		printf("Player %d\n", stPlayers[i].nPlayerNumber);
+		printf("Score %d\n\n", stPlayers[i].nScore);
+	}
 }
